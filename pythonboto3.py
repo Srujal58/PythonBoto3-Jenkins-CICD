@@ -26,7 +26,7 @@ instances = ec2_resource.create_instances(
     # Enable Apache to start on boot
     sudo systemctl enable apache2
     # Create a sample index.html
-    echo "<html><body><h1>Welcome to Apache Web Server - Shikhar Verma</h1></body></html>" | sudo tee /var/www/html/index.html
+    echo "<html><body><h1>Welcome to Apache Web Server - Srujal Shah</h1></body></html>" | sudo tee /var/www/html/index.html
     # Adjust the firewall (if required)
     sudo ufw allow 'Apache'
     ''',
