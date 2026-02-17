@@ -64,7 +64,7 @@ import boto3
 ec2 = boto3.client('ec2')
 
 # Stop the instance
-instance_id = 'i-03d6aea1ba1e292c3'
+instance_id = 'ami-0938a60d87953e820'
 
 ec2.stop_instances(InstanceIds=[instance_id])
 
