@@ -1,71 +1,51 @@
 import boto3
+
+# Create EC2 resource and client
 ec2_resource = boto3.resource('ec2')
+ec2_client = boto3.client('ec2')
+
+# Launch the instance
 instances = ec2_resource.create_instances(
-    ImageId = 'ami-0938a60d87953e820',
-    MinCount = 1,
-    MaxCount = 1,
-    InstanceType = 't2.micro',
-    KeyName = 'nodejskey',
-    BlockDeviceMappings = [
+    ImageId='ami-0938a60d87953e820',  # AMI to launch
+    MinCount=1,
+    MaxCount=1,
+    InstanceType='t2.micro',
+    KeyName='nodejskey',
+    BlockDeviceMappings=[
         {
             'DeviceName': '/dev/sda1',
             'Ebs': {
-                'VolumeSize': 20,  # 20 GB root volume
-                'VolumeType': 'gp2',  # General Purpose SSD
+                'VolumeSize': 20,
+                'VolumeType': 'gp2',
                 'DeleteOnTermination': False
             }
         }
     ],
     UserData='''#!/bin/bash
-    # Update the package list
     sudo apt update -y
-    # Install Apache
     sudo apt install apache2 -y
-    # Start Apache service
     sudo systemctl start apache2
-    # Enable Apache to start on boot
     sudo systemctl enable apache2
-    # Create a sample index.html
     echo "<html><body><h1>Welcome to Apache Web Server - Srujal Shah</h1></body></html>" | sudo tee /var/www/html/index.html
-    # Adjust the firewall (if required)
     sudo ufw allow 'Apache'
     ''',
-    TagSpecifications = [
+    TagSpecifications=[
         {
             'ResourceType': 'instance',
             'Tags': [
-                {
-                    'Key': 'Name',
-                    'Value': 'Pythontest'
-                },
-                {
-                    'Key': 'Department',
-                    'Value': 'Technical',
-                },
-                {
-                    'Key': 'Environment',
-                    'Value': 'Test'
-                }
+                {'Key': 'Name', 'Value': 'Pythontest'},
+                {'Key': 'Department', 'Value': 'Technical'},
+                {'Key': 'Environment', 'Value': 'Test'}
             ]
         }
     ]
 )
 
-# Print instance details
-for instance in instances:
-    print(f'Instance {instance.id} launched with a 20GB volume and HTTP server.')
+# Get the instance ID of the newly created instance
+instance = instances[0]
+instance_id = instance.id
+print(f'Instance {instance_id} launched with a 20GB volume and HTTP server.')
 
-   
-   
-import boto3
-
-# Create an ec2 client
-
-ec2 = boto3.client('ec2')
-
-# Stop the instance
-instance_id = 'ami-0938a60d87953e820'
-
-ec2.stop_instances(InstanceIds=[instance_id])
-
+# Stop the instance using the correct instance ID
+ec2_client.stop_instances(InstanceIds=[instance_id])
 print(f'Stopped the instance {instance_id}')
